@@ -1,25 +1,23 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Interfaz extends JFrame {
-    public static JButton btnEnviar;
+    public static JButton sendButton;
     public static JTextField editor;
-    public static JTextArea etiqueta;
+    public static JTextArea messageArea;
     JFrame frameMenu = new JFrame();
 
     public Interfaz() {
 
-        etiqueta = new JTextArea();
-        etiqueta.setBounds(10, 10, 468, 285);
-        etiqueta.setToolTipText("Aqui va el resultado");
-        etiqueta.setVisible(true);
-        etiqueta.setEnabled(false); // El area de mensajes del chat no se debe de poder editar
-        etiqueta.setLineWrap(true); // Las lineas se parten al llegar al ancho del textArea
-        etiqueta.setWrapStyleWord(true); // Las lineas se parten entre palabras (por los espacios blancos)
-        etiqueta.setBackground(Color.PINK);
-        JScrollPane scrollMensajesChat = new JScrollPane(etiqueta);
+        messageArea = new JTextArea();
+        messageArea.setBounds(10, 10, 390, 265);
+        messageArea.setToolTipText("Aqui va el resultado");
+        messageArea.setVisible(true);
+        messageArea.setEnabled(false); // El area de mensajes del chat no se debe de poder editar
+        messageArea.setLineWrap(true); // Las lineas se parten al llegar al ancho del textArea
+        messageArea.setWrapStyleWord(true); // Las lineas se parten entre palabras (por los espacios blancos)
+        messageArea.setBackground(Color.PINK);
+        JScrollPane scrollMensajesChat = new JScrollPane(messageArea);
 
 
         editor = new JTextField(""); //Incilaizamos el editorPane
@@ -32,10 +30,10 @@ public class Interfaz extends JFrame {
         });*/
 
 
-        btnEnviar = new JButton("Enviar");
-        btnEnviar.setBounds(405, 300, 75, 30);
-        btnEnviar.getName();
-        btnEnviar.setToolTipText("Calcula cuantos libros te quedan para alcanzar al maestro Perez Reverte!!");
+        sendButton = new JButton("Enviar");
+        sendButton.setBounds(405, 300, 75, 30);
+        sendButton.getName();
+        sendButton.setToolTipText("Envia el mensaje");
        /* btnEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,9 +52,9 @@ public class Interfaz extends JFrame {
         panelMenu.setOpaque(false);
         panelMenu.setLayout(null);
         panelMenu.setBounds(0, 0, 495, 400);
-        panelMenu.add(btnEnviar);
+        panelMenu.add(sendButton);
         panelMenu.add(editor);
-        panelMenu.add(etiqueta);
+        panelMenu.add(messageArea);
         panelMenu.add(scrollMensajesChat);
 
         /*
