@@ -8,7 +8,6 @@ public class Cliente extends JFrame implements ActionListener {
     private final JTextField campoMensaje = new JTextField(30);
     private final JTextArea areaChat = new JTextArea(10, 30);
     private final JButton botonEnviar = new JButton("Enviar");
-
     private String nombreUsuario;
     private DataInputStream entrada;
     private DataOutputStream salida;
@@ -49,18 +48,23 @@ public class Cliente extends JFrame implements ActionListener {
         salida.writeUTF(nombreUsuario);
 
         // Crear un nuevo hilo para manejar las entradas del servidor
-        Thread hiloServidor = new Thread(() -> {
-            try {
-                while (true) {
-                    String mensaje = entrada.readUTF();
-                    areaChat.append(mensaje );
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        // Thread hiloServidor = new Thread(() -> {
+        try {
+            while (true) {
+                String mensaje = entrada.readUTF();
+                areaChat.append(mensaje);
             }
-        });
+        } catch (IOException e) {
+            //e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Conexión rehusada, error de Entrada/Salida,\n"
+                    + "puede que haya ingresado una ip o un puerto\n"
+                    + "incorrecto, o que el servidor no este corriendo.\n"
+                    + "Esta aplicación se cerrará.");
+            System.exit(0);
+        }
+        //});
 
-        hiloServidor.start();
+        // hiloServidor.start();
     }
 
     @Override
@@ -86,7 +90,7 @@ public class Cliente extends JFrame implements ActionListener {
 
         // Conectar al servidor
         try {
-            cliente.conectar("localhost", 1234);
+            cliente.conectar("192.168.0.32", 1234);
         } catch (IOException e) {
             e.printStackTrace();
         }
