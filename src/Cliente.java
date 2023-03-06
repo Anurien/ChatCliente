@@ -7,10 +7,10 @@ import java.net.Socket;
 public class Cliente extends JFrame implements ActionListener {
     private final JTextField campoMensaje = new JTextField(30);
     private final JTextArea areaChat = new JTextArea(10, 30);
-    private final JButton botonEnviar = new JButton("Enviar");
-    private String nombreUsuario;
+    private final String nombreUsuario;
     private DataInputStream entrada;
     private DataOutputStream salida;
+    Socket socket;
 
     public Cliente(String nombreUsuario) {
         super(nombreUsuario);
@@ -26,6 +26,7 @@ public class Cliente extends JFrame implements ActionListener {
 
         JPanel panelInferior = new JPanel(new BorderLayout());
         panelInferior.add(campoMensaje, BorderLayout.CENTER);
+        JButton botonEnviar = new JButton("Enviar");
         panelInferior.add(botonEnviar, BorderLayout.EAST);
         panelPrincipal.add(panelInferior, BorderLayout.SOUTH);
 
@@ -40,7 +41,7 @@ public class Cliente extends JFrame implements ActionListener {
 
     public void conectar(String host, int puerto) throws IOException {
         // Conectar al servidor
-        Socket socket = new Socket(host, puerto);
+        socket = new Socket(host, puerto);
         entrada = new DataInputStream(socket.getInputStream());
         salida = new DataOutputStream(socket.getOutputStream());
 
@@ -48,23 +49,23 @@ public class Cliente extends JFrame implements ActionListener {
         salida.writeUTF(nombreUsuario);
 
         // Crear un nuevo hilo para manejar las entradas del servidor
-        // Thread hiloServidor = new Thread(() -> {
-        try {
-            while (true) {
-                String mensaje = entrada.readUTF();
-                areaChat.append(mensaje);
+        Thread hiloServidor = new Thread(() -> {
+            try {
+                while (true) {
+                    String mensaje = entrada.readUTF();
+                    areaChat.append(mensaje);
+                }
+            } catch (IOException e) {
+                //e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Conexión rehusada, error de Entrada/Salida,\n"
+                        + "puede que haya ingresado una ip o un puerto\n"
+                        + "incorrecto, o que el servidor no este corriendo.\n"
+                        + "Esta aplicación se cerrará.");
+                System.exit(0);
             }
-        } catch (IOException e) {
-            //e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Conexión rehusada, error de Entrada/Salida,\n"
-                    + "puede que haya ingresado una ip o un puerto\n"
-                    + "incorrecto, o que el servidor no este corriendo.\n"
-                    + "Esta aplicación se cerrará.");
-            System.exit(0);
-        }
-        //});
+        });
 
-        // hiloServidor.start();
+        hiloServidor.start();
     }
 
     @Override
@@ -73,11 +74,18 @@ public class Cliente extends JFrame implements ActionListener {
             // Enviar el mensaje al servidor
             String mensaje = campoMensaje.getText();
             areaChat.append(nombreUsuario + ": " + mensaje + "\n");
-            salida.writeUTF(mensaje + "\n");
-            // Borrar el campo de texto después de enviar el mensaje
-            campoMensaje.setText("");
+            if(mensaje.equals("logout")){
+                salida.writeUTF("logout");
+                socket.close();
+
+            }else{
+                salida.writeUTF(mensaje + "\n");
+                // Borrar el campo de texto después de enviar el mensaje
+                campoMensaje.setText("");
+            }
+
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
 
