@@ -68,14 +68,18 @@ public class Cliente extends JFrame implements ActionListener {
         hiloServidor.start();
     }
 
+    /**
+     *Método del evento donde se envia el mensaje del cliente al servidor
+     * @param e el evento
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
             // Enviar el mensaje al servidor
             String mensaje = campoMensaje.getText();
             areaChat.append(nombreUsuario + ": " + mensaje + "\n");
-            if(mensaje.equals("logout")){
-                salida.writeUTF("logout");
+            if(mensaje.equals("/bye")){
+                salida.writeUTF("/bye");
                 socket.close();
 
             }else{
@@ -98,7 +102,7 @@ public class Cliente extends JFrame implements ActionListener {
 
         // Conectar al servidor
         try {
-            cliente.conectar("192.168.0.32", 1234);
+            cliente.conectar("10.0.9.14", 5555);
         } catch (IOException e) {
             e.printStackTrace();
         }
